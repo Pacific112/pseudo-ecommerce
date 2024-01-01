@@ -5,14 +5,20 @@
 	"scripts": {
 		"start": "bun run index.ts",
 		"dev": "bun --watch --inspect index.ts",
+		"db:seed": "bun run src/db/seed.ts",
 		"prepare": "husky install"
 	},
 	"dependencies": {
-		"figlet": "^1.7.0"
+		"@faker-js/faker": "^8.3.1",
+		"drizzle-orm": "^0.29.2",
+		"figlet": "^1.7.0",
+		"postgres": "^3.4.3"
 	},
 	"devDependencies": {
 		"@types/bun": "latest",
 		"@types/figlet": "^1.5.8",
+		"drizzle-kit": "^0.20.9",
+		"enforce-unique": "^1.2.0",
 		"husky": "^8.0.3",
 		"lint-staged": "^15.2.0",
 		"prettier": "^3.1.1"
