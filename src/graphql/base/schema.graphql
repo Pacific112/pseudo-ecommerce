@@ -1,0 +1,6 @@
+type Query
+
+type Price {
+	cents: Float!
+	currency: String!
+}

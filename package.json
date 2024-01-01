@@ -3,8 +3,9 @@
 	"module": "index.ts",
 	"type": "module",
 	"scripts": {
-		"start": "bun run index.ts",
-		"dev": "bun --watch --inspect index.ts",
+		"start": "bun run ./src/server.ts",
+		"dev": "bun --watch --inspect ./src/server.ts",
+		"codegen": "bunx graphql-codegen",
 		"db:seed": "bun run src/db/seed.ts",
 		"prepare": "husky install"
 	},
@@ -12,9 +13,13 @@
 		"@faker-js/faker": "^8.3.1",
 		"drizzle-orm": "^0.29.2",
 		"figlet": "^1.7.0",
+		"graphql": "^16.8.1",
+		"graphql-yoga": "^5.1.0",
 		"postgres": "^3.4.3"
 	},
 	"devDependencies": {
+		"@eddeee888/gcg-typescript-resolver-files": "^0.7.2",
+		"@graphql-codegen/cli": "^5.0.0",
 		"@types/bun": "latest",
 		"@types/figlet": "^1.5.8",
 		"drizzle-kit": "^0.20.9",
