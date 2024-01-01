@@ -3,3 +3,7 @@
    2. Each variant should have a price and SKU
    3. Variants should be connected by some parent (for example T-Shirt has one name and description but multiple sizes and colors)
    4. Some variants could be out of stock or more expensive
+
+Projects:
+
+- queries -[ ] paginated list of products -[ ] product details -[ ] similar products
