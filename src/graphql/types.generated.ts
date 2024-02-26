@@ -1,4 +1,5 @@
 import type { GraphQLResolveInfo } from "graphql";
+import type { PriceMapper } from "./base/schema.mappers";
 import type { ProductMapper } from "./product/schema.mappers";
 export type Maybe<T> = T | null | undefined;
 export type InputMaybe<T> = T | null | undefined;
@@ -184,7 +185,7 @@ export type ResolversTypes = {
 	PageInfo: ResolverTypeWrapper<PageInfo>;
 	Boolean: ResolverTypeWrapper<Scalars["Boolean"]["output"]>;
 	String: ResolverTypeWrapper<Scalars["String"]["output"]>;
-	Price: ResolverTypeWrapper<Price>;
+	Price: ResolverTypeWrapper<PriceMapper>;
 	Float: ResolverTypeWrapper<Scalars["Float"]["output"]>;
 	Product: ResolverTypeWrapper<ProductMapper>;
 	ID: ResolverTypeWrapper<Scalars["ID"]["output"]>;
@@ -200,7 +201,7 @@ export type ResolversParentTypes = {
 	PageInfo: PageInfo;
 	Boolean: Scalars["Boolean"]["output"];
 	String: Scalars["String"]["output"];
-	Price: Price;
+	Price: PriceMapper;
 	Float: Scalars["Float"]["output"];
 	Product: ProductMapper;
 	ID: Scalars["ID"]["output"];
