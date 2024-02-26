@@ -4,6 +4,10 @@ import { defineConfig } from "@eddeee888/gcg-typescript-resolver-files";
 export default {
 	schema: "**/schema.graphql",
 	generates: {
-		"src/graphql": defineConfig(),
+		"src/graphql": defineConfig({
+			typesPluginsConfig: {
+				useTypeImports: true,
+			},
+		}),
 	},
 } satisfies CodegenConfig;

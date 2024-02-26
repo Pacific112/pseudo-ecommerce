@@ -5,7 +5,7 @@ export const Product: ProductResolvers = {
 	id: (parent) => parent.id,
 	name: (parent) => parent.name,
 	price: (parent) => ({
-		cents: parent.priceCents!,
-		currency: parent.priceCurrency!,
+		cents: parent.priceCents,
+		currency: parent.priceCurrency,
 	}),
 };

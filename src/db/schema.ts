@@ -22,7 +22,7 @@ export const products = pgTable("products", {
 	slug: varchar("slug").notNull().unique(),
 	createdAt: timestamp("created_at").notNull(),
 	priceCents: integer("price").notNull(),
-	priceCurrency: varchar("currency").default("USD"),
+	priceCurrency: varchar("currency").notNull().default("USD"),
 	quantity: integer("quantity").notNull(),
 	sku: varchar("sku").notNull().unique(),
 	size: varchar("size").notNull(),
