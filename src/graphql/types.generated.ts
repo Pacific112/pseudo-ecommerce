@@ -1,5 +1,5 @@
-import { GraphQLResolveInfo } from "graphql";
-import { ProductMapper } from "./product/schema.mappers";
+import type { GraphQLResolveInfo } from "graphql";
+import type { ProductMapper } from "./product/schema.mappers";
 export type Maybe<T> = T | null | undefined;
 export type InputMaybe<T> = T | null | undefined;
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -20,6 +20,7 @@ export type Incremental<T> =
 	| {
 			[P in keyof T]?: P extends " $fragmentName" | "__typename" ? T[P] : never;
 	  };
+export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 export type RequireFields<T, K extends keyof T> = Omit<T, K> & {
 	[P in K]-?: NonNullable<T[P]>;
 };
@@ -30,6 +31,12 @@ export type Scalars = {
 	Boolean: { input: boolean; output: boolean };
 	Int: { input: number; output: number };
 	Float: { input: number; output: number };
+};
+
+export type PageInfo = {
+	__typename?: "PageInfo";
+	hasNextPage: Scalars["Boolean"]["output"];
+	nextCursor?: Maybe<Scalars["String"]["output"]>;
 };
 
 export type Price = {
@@ -46,13 +53,25 @@ export type Product = {
 	price: Price;
 };
 
+export type ProductPage = {
+	__typename?: "ProductPage";
+	nodes: Array<Product>;
+	pageInfo: PageInfo;
+};
+
 export type Query = {
 	__typename?: "Query";
 	product?: Maybe<Product>;
+	products: ProductPage;
 };
 
 export type QueryproductArgs = {
 	id: Scalars["ID"]["input"];
+};
+
+export type QueryproductsArgs = {
+	after?: InputMaybe<Scalars["String"]["input"]>;
+	pageSize?: InputMaybe<Scalars["Int"]["input"]>;
 };
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
@@ -162,24 +181,48 @@ export type DirectiveResolverFn<
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
+	PageInfo: ResolverTypeWrapper<PageInfo>;
+	Boolean: ResolverTypeWrapper<Scalars["Boolean"]["output"]>;
+	String: ResolverTypeWrapper<Scalars["String"]["output"]>;
 	Price: ResolverTypeWrapper<Price>;
 	Float: ResolverTypeWrapper<Scalars["Float"]["output"]>;
-	String: ResolverTypeWrapper<Scalars["String"]["output"]>;
 	Product: ResolverTypeWrapper<ProductMapper>;
 	ID: ResolverTypeWrapper<Scalars["ID"]["output"]>;
+	ProductPage: ResolverTypeWrapper<
+		Omit<ProductPage, "nodes"> & { nodes: Array<ResolversTypes["Product"]> }
+	>;
 	Query: ResolverTypeWrapper<{}>;
-	Boolean: ResolverTypeWrapper<Scalars["Boolean"]["output"]>;
+	Int: ResolverTypeWrapper<Scalars["Int"]["output"]>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
+	PageInfo: PageInfo;
+	Boolean: Scalars["Boolean"]["output"];
+	String: Scalars["String"]["output"];
 	Price: Price;
 	Float: Scalars["Float"]["output"];
-	String: Scalars["String"]["output"];
 	Product: ProductMapper;
 	ID: Scalars["ID"]["output"];
+	ProductPage: Omit<ProductPage, "nodes"> & {
+		nodes: Array<ResolversParentTypes["Product"]>;
+	};
 	Query: {};
-	Boolean: Scalars["Boolean"]["output"];
+	Int: Scalars["Int"]["output"];
+};
+
+export type PageInfoResolvers<
+	ContextType = any,
+	ParentType extends
+		ResolversParentTypes["PageInfo"] = ResolversParentTypes["PageInfo"],
+> = {
+	hasNextPage?: Resolver<ResolversTypes["Boolean"], ParentType, ContextType>;
+	nextCursor?: Resolver<
+		Maybe<ResolversTypes["String"]>,
+		ParentType,
+		ContextType
+	>;
+	__isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type PriceResolvers<
@@ -208,6 +251,16 @@ export type ProductResolvers<
 	__isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type ProductPageResolvers<
+	ContextType = any,
+	ParentType extends
+		ResolversParentTypes["ProductPage"] = ResolversParentTypes["ProductPage"],
+> = {
+	nodes?: Resolver<Array<ResolversTypes["Product"]>, ParentType, ContextType>;
+	pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
+	__isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type QueryResolvers<
 	ContextType = any,
 	ParentType extends
@@ -219,10 +272,18 @@ export type QueryResolvers<
 		ContextType,
 		RequireFields<QueryproductArgs, "id">
 	>;
+	products?: Resolver<
+		ResolversTypes["ProductPage"],
+		ParentType,
+		ContextType,
+		Partial<QueryproductsArgs>
+	>;
 };
 
 export type Resolvers<ContextType = any> = {
+	PageInfo?: PageInfoResolvers<ContextType>;
 	Price?: PriceResolvers<ContextType>;
 	Product?: ProductResolvers<ContextType>;
+	ProductPage?: ProductPageResolvers<ContextType>;
 	Query?: QueryResolvers<ContextType>;
 };

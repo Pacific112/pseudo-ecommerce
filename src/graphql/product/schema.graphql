@@ -1,5 +1,11 @@
 extend type Query {
 	product(id: ID!): Product
+	products(pageSize: Int, after: String): ProductPage!
+}
+
+type ProductPage {
+	nodes: [Product!]!
+	pageInfo: PageInfo!
 }
 
 type Product {
@@ -7,4 +13,9 @@ type Product {
 	name: String!
 	price: Price!
 	description: String
+}
+
+type PageInfo {
+	hasNextPage: Boolean!
+	nextCursor: String
 }
