@@ -1,3 +1,5 @@
+scalar HashID
+
 type Query
 
 type Price {

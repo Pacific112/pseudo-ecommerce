@@ -16,7 +16,9 @@
 		"drizzle-orm": "^0.29.2",
 		"figlet": "^1.7.0",
 		"graphql": "^16.8.1",
+		"graphql-scalars": "^1.22.5",
 		"graphql-yoga": "^5.1.0",
+		"hashids": "^2.3.0",
 		"postgres": "^3.4.3"
 	},
 	"devDependencies": {

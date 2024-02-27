@@ -1,4 +1,8 @@
-import type { GraphQLResolveInfo } from "graphql";
+import type {
+	GraphQLResolveInfo,
+	GraphQLScalarType,
+	GraphQLScalarTypeConfig,
+} from "graphql";
 import type { PriceMapper } from "./base/schema.mappers";
 import type { ProductMapper } from "./product/schema.mappers";
 export type Maybe<T> = T | null | undefined;
@@ -27,11 +31,12 @@ export type RequireFields<T, K extends keyof T> = Omit<T, K> & {
 };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-	ID: { input: string; output: string | number };
+	ID: { input: string; output: string };
 	String: { input: string; output: string };
 	Boolean: { input: boolean; output: boolean };
 	Int: { input: number; output: number };
 	Float: { input: number; output: number };
+	HashID: { input: any; output: any };
 };
 
 export type PageInfo = {
@@ -49,7 +54,7 @@ export type Price = {
 export type Product = {
 	__typename?: "Product";
 	description?: Maybe<Scalars["String"]["output"]>;
-	id: Scalars["ID"]["output"];
+	id: Scalars["HashID"]["output"];
 	name: Scalars["String"]["output"];
 	price: Price;
 };
@@ -67,7 +72,7 @@ export type Query = {
 };
 
 export type QueryproductArgs = {
-	id: Scalars["ID"]["input"];
+	id: Scalars["HashID"]["input"];
 };
 
 export type QueryproductsArgs = {
@@ -182,13 +187,13 @@ export type DirectiveResolverFn<
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
+	HashID: ResolverTypeWrapper<Scalars["HashID"]["output"]>;
 	PageInfo: ResolverTypeWrapper<PageInfo>;
 	Boolean: ResolverTypeWrapper<Scalars["Boolean"]["output"]>;
 	String: ResolverTypeWrapper<Scalars["String"]["output"]>;
 	Price: ResolverTypeWrapper<PriceMapper>;
 	Float: ResolverTypeWrapper<Scalars["Float"]["output"]>;
 	Product: ResolverTypeWrapper<ProductMapper>;
-	ID: ResolverTypeWrapper<Scalars["ID"]["output"]>;
 	ProductPage: ResolverTypeWrapper<
 		Omit<ProductPage, "nodes"> & { nodes: Array<ResolversTypes["Product"]> }
 	>;
@@ -198,19 +203,24 @@ export type ResolversTypes = {
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
+	HashID: Scalars["HashID"]["output"];
 	PageInfo: PageInfo;
 	Boolean: Scalars["Boolean"]["output"];
 	String: Scalars["String"]["output"];
 	Price: PriceMapper;
 	Float: Scalars["Float"]["output"];
 	Product: ProductMapper;
-	ID: Scalars["ID"]["output"];
 	ProductPage: Omit<ProductPage, "nodes"> & {
 		nodes: Array<ResolversParentTypes["Product"]>;
 	};
 	Query: {};
 	Int: Scalars["Int"]["output"];
 };
+
+export interface HashIDScalarConfig
+	extends GraphQLScalarTypeConfig<ResolversTypes["HashID"], any> {
+	name: "HashID";
+}
 
 export type PageInfoResolvers<
 	ContextType = any,
@@ -246,7 +256,7 @@ export type ProductResolvers<
 		ParentType,
 		ContextType
 	>;
-	id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
+	id?: Resolver<ResolversTypes["HashID"], ParentType, ContextType>;
 	name?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
 	price?: Resolver<ResolversTypes["Price"], ParentType, ContextType>;
 	__isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -282,6 +292,7 @@ export type QueryResolvers<
 };
 
 export type Resolvers<ContextType = any> = {
+	HashID?: GraphQLScalarType;
 	PageInfo?: PageInfoResolvers<ContextType>;
 	Price?: PriceResolvers<ContextType>;
 	Product?: ProductResolvers<ContextType>;
