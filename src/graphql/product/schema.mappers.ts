@@ -1,1 +1,1 @@
-export type { ProductSelect as ProductMapper } from "db/schema.ts";
+export type { ProductSelect as ProductMapper } from "./schema.db.ts";

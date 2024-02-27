@@ -5,15 +5,7 @@ import {
 	timestamp,
 	varchar,
 } from "drizzle-orm/pg-core";
-
-export const assets = pgTable("assets", {
-	id: serial("id").primaryKey(),
-	uuid: varchar("uuid").notNull(),
-	createdAt: timestamp("created_at").notNull(),
-});
-
-export type AssetInsert = typeof assets.$inferInsert;
-export type AssetSelect = typeof assets.$inferSelect;
+import { assets } from "db/schema.db.ts";
 
 export const products = pgTable("products", {
 	id: serial("id").primaryKey(),

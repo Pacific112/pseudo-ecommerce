@@ -1,7 +1,7 @@
 import type { QueryResolvers } from "graphql/types.generated.ts";
 import { dbClient } from "db/db.client.ts";
 import { eq } from "drizzle-orm";
-import { products } from "db/schema.ts";
+import { products } from "graphql/product/schema.db.ts";
 
 export const product: NonNullable<QueryResolvers["product"]> = async (
 	_parent,

@@ -1,4 +1,4 @@
-import type { QueryResolvers } from "./../../../types.generated";
+import type { QueryResolvers } from "graphql/types.generated.ts";
 import { dbClient } from "db/db.client.ts";
 
 export const products: NonNullable<QueryResolvers["products"]> = async (

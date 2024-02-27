@@ -7,6 +7,8 @@
 		"dev": "bun --watch --inspect ./src/server.ts",
 		"codegen": "bunx graphql-codegen && prettier --write .",
 		"db:seed": "bun run src/db/seed.ts",
+		"db:generate": "drizzle-kit generate:pg",
+		"db:push": "drizzle-kit push:pg",
 		"prepare": "husky install"
 	},
 	"dependencies": {

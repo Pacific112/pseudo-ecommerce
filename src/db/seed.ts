@@ -1,15 +1,13 @@
 import postgres from "postgres";
 import { drizzle } from "drizzle-orm/postgres-js";
+import { type AssetInsert, assets, type AssetSelect } from "db/schema.db.ts";
+import { faker } from "@faker-js/faker";
+import { UniqueEnforcer } from "enforce-unique";
 import {
-	type AssetInsert,
-	assets,
-	type AssetSelect,
 	productAssets,
 	type ProductInsert,
 	products,
-} from "./schema.ts";
-import { faker } from "@faker-js/faker";
-import { UniqueEnforcer } from "enforce-unique";
+} from "graphql/product/schema.db.ts";
 
 const migrationsClient = postgres(process.env.DB_CONNECTION_STRING, {
 	max: 1,
