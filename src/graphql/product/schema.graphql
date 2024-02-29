@@ -1,5 +1,5 @@
 extend type Query {
-	product(id: HashID!): Product
+	productBySlug(slug: String!): Product!
 	products(pageSize: Int, after: String): ProductPage!
 }
 
@@ -12,6 +12,7 @@ type Product {
 	id: HashID!
 	name: String!
 	price: Price!
+	slug: String!
 	description: String
 }
 
