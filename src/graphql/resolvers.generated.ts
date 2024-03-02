@@ -1,7 +1,7 @@
 /* This file was automatically generated. DO NOT UPDATE MANUALLY. */
 import type { Resolvers } from "./types.generated";
 import { HashID } from "./base/resolvers/HashID";
-import { PageInfo } from "./product/resolvers/PageInfo";
+import { PageInfo } from "./base/resolvers/PageInfo";
 import { Price } from "./base/resolvers/Price";
 import { Product } from "./product/resolvers/Product";
 import { ProductPage } from "./product/resolvers/ProductPage";

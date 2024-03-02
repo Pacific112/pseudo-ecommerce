@@ -1,8 +1,14 @@
 scalar HashID
+scalar Cursor
 
 type Query
 
 type Price {
 	cents: Float!
 	currency: String!
+}
+
+type PageInfo {
+	hasNextPage: Boolean!
+	nextCursor: String
 }

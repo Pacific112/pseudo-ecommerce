@@ -15,8 +15,3 @@ type Product {
 	slug: String!
 	description: String
 }
-
-type PageInfo {
-	hasNextPage: Boolean!
-	nextCursor: String
-}
