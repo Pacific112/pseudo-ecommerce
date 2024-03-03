@@ -7,8 +7,8 @@ import {
 	productAssets,
 	productAttributes,
 	type ProductAttributeSelect,
+	type ProductAttributeValueInsert,
 	productAttributeValues,
-	type ProductAttributeValuesInsert,
 	type ProductInsert,
 	products,
 } from "graphql/product/schema.db.ts";
@@ -145,13 +145,14 @@ const generateProductAttributeValues = (
 	productId: number,
 	productAttributes: ProductAttributeSelect[],
 ) => {
-	const productAttributeValues: ProductAttributeValuesInsert[] = [];
+	const productAttributeValues: ProductAttributeValueInsert[] = [];
 	for (const attribute of productAttributes) {
 		switch (attribute.type) {
 			case "string":
 				productAttributeValues.push({
 					productId,
 					productAttributeId: attribute.id,
+					name: attribute.name,
 					type: attribute.type,
 					value: faker.person.bio(),
 				});
@@ -160,6 +161,7 @@ const generateProductAttributeValues = (
 				productAttributeValues.push({
 					productId,
 					productAttributeId: attribute.id,
+					name: attribute.name,
 					type: attribute.type,
 					value: faker.number.int({ min: 10, max: 120 }).toString(10),
 				});
@@ -168,6 +170,7 @@ const generateProductAttributeValues = (
 				productAttributeValues.push({
 					productId,
 					productAttributeId: attribute.id,
+					name: attribute.name,
 					type: attribute.type,
 					value: faker.number.int() % 2 === 0 ? "true" : "false",
 				});
@@ -178,6 +181,7 @@ const generateProductAttributeValues = (
 					productId,
 					productAttributeId: attribute.id,
 					type: attribute.type,
+					name: attribute.name,
 					value:
 						configuration.options[
 							Math.floor(Math.random() * configuration.options.length)
@@ -202,7 +206,7 @@ async function seed() {
 		.values(productsToInsert)
 		.returning({ id: products.id });
 
-	const productAttributeValuesToInsert: ProductAttributeValuesInsert[] = [];
+	const productAttributeValuesToInsert: ProductAttributeValueInsert[] = [];
 	for (const product of insertedProducts) {
 		const productAttributeValues = generateProductAttributeValues(
 			product.id,

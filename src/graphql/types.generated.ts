@@ -4,7 +4,10 @@ import type {
 	GraphQLScalarTypeConfig,
 } from "graphql";
 import type { PriceMapper } from "./base/schema.mappers";
-import type { ProductMapper } from "./product/schema.mappers";
+import type {
+	ProductMapper,
+	ProductAttributeMapper,
+} from "./product/schema.mappers";
 export type Maybe<T> = T | null | undefined;
 export type InputMaybe<T> = T | null | undefined;
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -53,11 +56,19 @@ export type Price = {
 
 export type Product = {
 	__typename?: "Product";
+	attributes: Array<ProductAttribute>;
 	description?: Maybe<Scalars["String"]["output"]>;
 	id: Scalars["HashID"]["output"];
 	name: Scalars["String"]["output"];
 	price: Price;
 	slug: Scalars["String"]["output"];
+};
+
+export type ProductAttribute = {
+	__typename?: "ProductAttribute";
+	name: Scalars["String"]["output"];
+	type: Scalars["String"]["output"];
+	value: Scalars["String"]["output"];
 };
 
 export type ProductPage = {
@@ -195,6 +206,7 @@ export type ResolversTypes = {
 	Price: ResolverTypeWrapper<PriceMapper>;
 	Float: ResolverTypeWrapper<Scalars["Float"]["output"]>;
 	Product: ResolverTypeWrapper<ProductMapper>;
+	ProductAttribute: ResolverTypeWrapper<ProductAttributeMapper>;
 	ProductPage: ResolverTypeWrapper<
 		Omit<ProductPage, "nodes"> & { nodes: Array<ResolversTypes["Product"]> }
 	>;
@@ -211,6 +223,7 @@ export type ResolversParentTypes = {
 	Price: PriceMapper;
 	Float: Scalars["Float"]["output"];
 	Product: ProductMapper;
+	ProductAttribute: ProductAttributeMapper;
 	ProductPage: Omit<ProductPage, "nodes"> & {
 		nodes: Array<ResolversParentTypes["Product"]>;
 	};
@@ -252,6 +265,11 @@ export type ProductResolvers<
 	ParentType extends
 		ResolversParentTypes["Product"] = ResolversParentTypes["Product"],
 > = {
+	attributes?: Resolver<
+		Array<ResolversTypes["ProductAttribute"]>,
+		ParentType,
+		ContextType
+	>;
 	description?: Resolver<
 		Maybe<ResolversTypes["String"]>,
 		ParentType,
@@ -261,6 +279,17 @@ export type ProductResolvers<
 	name?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
 	price?: Resolver<ResolversTypes["Price"], ParentType, ContextType>;
 	slug?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+	__isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ProductAttributeResolvers<
+	ContextType = any,
+	ParentType extends
+		ResolversParentTypes["ProductAttribute"] = ResolversParentTypes["ProductAttribute"],
+> = {
+	name?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+	type?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+	value?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
 	__isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -298,6 +327,7 @@ export type Resolvers<ContextType = any> = {
 	PageInfo?: PageInfoResolvers<ContextType>;
 	Price?: PriceResolvers<ContextType>;
 	Product?: ProductResolvers<ContextType>;
+	ProductAttribute?: ProductAttributeResolvers<ContextType>;
 	ProductPage?: ProductPageResolvers<ContextType>;
 	Query?: QueryResolvers<ContextType>;
 };

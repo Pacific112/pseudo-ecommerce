@@ -7,6 +7,7 @@ import {
 	timestamp,
 	varchar,
 } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
 
 export const attributeTypeEnum = pgEnum("attribute_type", [
 	"string",
@@ -28,6 +29,7 @@ export type ProductAttributeSelect = typeof productAttributes.$inferSelect;
 export const productAttributeValues = pgTable("product_attribute_values", {
 	id: serial("id").primaryKey(),
 	type: attributeTypeEnum("type").notNull(),
+	name: varchar("name").notNull(),
 	value: varchar("value").notNull(),
 	productAttributeId: integer("product_attribute_id")
 		.notNull()
@@ -37,9 +39,9 @@ export const productAttributeValues = pgTable("product_attribute_values", {
 		.references(() => products.id),
 });
 
-export type ProductAttributeValuesInsert =
+export type ProductAttributeValueInsert =
 	typeof productAttributeValues.$inferInsert;
-export type ProductAttributeValuesSelect =
+export type ProductAttributeValueSelect =
 	typeof productAttributeValues.$inferSelect;
 
 export const products = pgTable("products", {
@@ -65,3 +67,17 @@ export const productAssets = pgTable("product_assets", {
 });
 
 export type ProductAssetInsert = typeof productAssets.$inferInsert;
+
+export const productAttributeValueRelations = relations(
+	productAttributeValues,
+	({ one }) => ({
+		product: one(products, {
+			fields: [productAttributeValues.productId],
+			references: [products.id],
+		}),
+	}),
+);
+
+export const productRelations = relations(products, ({ many }) => ({
+	attributes: many(productAttributeValues),
+}));

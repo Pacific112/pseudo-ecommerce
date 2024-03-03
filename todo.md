@@ -55,7 +55,9 @@ Products:
   - [x] paginated list of products
   - [x] host assets somewhere
   - [x] product - show assets
-  - [ ] attributes abstraction
+  - [x] attributes abstraction
+    - [x] schema
+    - [x] graphql
   - [ ] product variants
 - [ ] categories
   - [ ] products from category
@@ -74,6 +76,8 @@ Products:
   - [ ] make sure it is all paginated - we need to support multiple cursors https://medium.com/@george_16060/cursor-based-pagination-with-arbitrary-ordering-b4af6d5e22db
 - [ ] improvements
   - [ ] hashid should be scoped by graphql type (for example Product should become a seed for it)
+  - [ ] attributes - they should be joined and fetched only when requested. Maybe use info object for that. Can it be improved by data loader?
+  - [ ] Why I always have to defined all fields (even non transformed) in resolvers?
 - [ ] assets management
   - [ ] ordering
   - [ ] title / alt text

@@ -5,4 +5,5 @@ export const Product: ProductResolvers = {
 	description: (parent) => parent.description,
 	name: (parent) => parent.name,
 	slug: (parent) => parent.slug,
+	attributes: (parent) => parent.attributes,
 };

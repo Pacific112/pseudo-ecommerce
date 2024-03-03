@@ -1,5 +1,4 @@
 scalar HashID
-scalar Cursor
 
 type Query
 

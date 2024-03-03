@@ -8,10 +8,17 @@ type ProductPage {
 	pageInfo: PageInfo!
 }
 
+type ProductAttribute {
+	name: String!
+	value: String!
+	type: String!
+}
+
 type Product {
 	id: HashID!
 	name: String!
 	price: Price!
 	slug: String!
 	description: String
+	attributes: [ProductAttribute!]!
 }

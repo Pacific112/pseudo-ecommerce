@@ -9,6 +9,9 @@ export const productBySlug: NonNullable<
 > = async (_parent, { slug }, _ctx) => {
 	const foundProduct = await dbClient.query.products.findFirst({
 		where: eq(products.slug, slug),
+		with: {
+			attributes: true,
+		},
 	});
 
 	if (!foundProduct) {
