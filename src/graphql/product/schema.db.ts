@@ -5,7 +5,6 @@ import {
 	timestamp,
 	varchar,
 } from "drizzle-orm/pg-core";
-import { assets } from "db/schema.db.ts";
 
 export const products = pgTable("products", {
 	id: serial("id").primaryKey(),
@@ -19,9 +18,6 @@ export const products = pgTable("products", {
 	sku: varchar("sku").notNull().unique(),
 	size: varchar("size").notNull(),
 	color: varchar("color").notNull(),
-	thumbnailId: integer("thumbnailId")
-		.notNull()
-		.references(() => assets.id),
 });
 
 export type ProductInsert = typeof products.$inferInsert;
@@ -32,8 +28,8 @@ export const productAssets = pgTable("product_assets", {
 	productId: integer("product_id")
 		.notNull()
 		.references(() => products.id),
-	assetId: integer("asset_id")
-		.notNull()
-		.references(() => assets.id),
+	path: varchar("path").notNull(),
 	createdAt: timestamp("created_at").notNull(),
 });
+
+export type ProductAssetInsert = typeof productAssets.$inferInsert;
