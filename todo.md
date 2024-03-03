@@ -58,6 +58,7 @@ Products:
   - [ ] products from category
   - [ ] categories can be nested (max 3 or something)
   - [ ] product can be part of many categories
+  - [ ] similar products - based on same categories
 - [ ] search
   - [ ] two approaches
     - [ ] test out index
@@ -85,11 +86,14 @@ Products:
 - [ ] Example shop site built with the API (NextJS)
 - [ ] Management project (NextJS)
   - [ ] With tutorial
-  - [ ] Templates (for example clotching shop)
+  - [ ] Templates (for example shop with clotches -> defines categories, attributes etc.)
   - [ ] Asset validation (no nudity etc.)
+- [ ] For the future
+  - [ ] stock
 - Ideas:
   - [ ] MultiLanguage
   - [ ] upsell others - bought together. Based on statistics
+  - [ ] Similar products - based on machine learning
 - Tooling:
   - [ ] Dependabot / RenovateBot
   - [ ] Some AI powered code reviews for Github
