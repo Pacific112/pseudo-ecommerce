@@ -5,9 +5,14 @@ import { UniqueEnforcer } from "enforce-unique";
 import {
 	type ProductAssetInsert,
 	productAssets,
+	productAttributes,
+	type ProductAttributeSelect,
+	productAttributeValues,
+	type ProductAttributeValuesInsert,
 	type ProductInsert,
 	products,
 } from "graphql/product/schema.db.ts";
+import { dbClient } from "db/db.client.ts";
 
 const migrationsClient = postgres(process.env.DB_CONNECTION_STRING, {
 	max: 1,
@@ -97,6 +102,30 @@ const generateProductAssets = (productId: number) => {
 	return assetsToInsert;
 };
 
+const generateProductAttributes = () =>
+	dbClient
+		.insert(productAttributes)
+		.values([
+			{
+				name: "Color",
+				type: "enum",
+				configuration: { options: ["red", "blue", "green"] },
+			},
+			{
+				name: "modelDescription",
+				type: "string",
+			},
+			{
+				name: "weight",
+				type: "number",
+			},
+			{
+				name: "recentlyAdded",
+				type: "boolean",
+			},
+		])
+		.returning();
+
 const NUMBER_OF_PRODUCTS = 100;
 const uniqueEnforcerProductName = new UniqueEnforcer();
 const generateProduct = () => {
@@ -108,15 +137,62 @@ const generateProduct = () => {
 		description: faker.commerce.productDescription(),
 		priceCents: Number(faker.commerce.price()),
 		slug: faker.helpers.slugify(name).toLowerCase(),
-		color: faker.color.human(),
-		sku: faker.string.alphanumeric(10),
 		createdAt: faker.date.past(),
-		quantity: faker.number.int({ min: 0, max: 100 }),
-		size: ["XS", "S", "M", "L", "XL"][faker.number.int({ min: 0, max: 4 })],
 	} satisfies ProductInsert;
 };
 
+const generateProductAttributeValues = (
+	productId: number,
+	productAttributes: ProductAttributeSelect[],
+) => {
+	const productAttributeValues: ProductAttributeValuesInsert[] = [];
+	for (const attribute of productAttributes) {
+		switch (attribute.type) {
+			case "string":
+				productAttributeValues.push({
+					productId,
+					productAttributeId: attribute.id,
+					type: attribute.type,
+					value: faker.person.bio(),
+				});
+				break;
+			case "number":
+				productAttributeValues.push({
+					productId,
+					productAttributeId: attribute.id,
+					type: attribute.type,
+					value: faker.number.int({ min: 10, max: 120 }).toString(10),
+				});
+				break;
+			case "boolean":
+				productAttributeValues.push({
+					productId,
+					productAttributeId: attribute.id,
+					type: attribute.type,
+					value: faker.number.int() % 2 === 0 ? "true" : "false",
+				});
+				break;
+			case "enum":
+				const configuration = attribute.configuration as { options: string[] };
+				productAttributeValues.push({
+					productId,
+					productAttributeId: attribute.id,
+					type: attribute.type,
+					value:
+						configuration.options[
+							Math.floor(Math.random() * configuration.options.length)
+						],
+				});
+				break;
+		}
+	}
+
+	return productAttributeValues;
+};
+
 async function seed() {
+	const productAttributes = await generateProductAttributes();
+
 	const productsToInsert: ProductInsert[] = [];
 	for (let i = 0; i < NUMBER_OF_PRODUCTS; i++) {
 		productsToInsert.push(generateProduct());
@@ -125,6 +201,18 @@ async function seed() {
 		.insert(products)
 		.values(productsToInsert)
 		.returning({ id: products.id });
+
+	const productAttributeValuesToInsert: ProductAttributeValuesInsert[] = [];
+	for (const product of insertedProducts) {
+		const productAttributeValues = generateProductAttributeValues(
+			product.id,
+			productAttributes,
+		);
+		productAttributeValuesToInsert.push(...productAttributeValues);
+	}
+	await db
+		.insert(productAttributeValues)
+		.values(productAttributeValuesToInsert);
 
 	const productAssetsToInsert = [];
 	for (const product of insertedProducts) {
@@ -136,6 +224,8 @@ async function seed() {
 }
 
 const cleanDb = async () => {
+	await db.delete(productAttributeValues).execute();
+	await db.delete(productAttributes).execute();
 	await db.delete(productAssets).execute();
 	await db.delete(products).execute();
 };
