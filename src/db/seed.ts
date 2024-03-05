@@ -126,7 +126,7 @@ const generateProductAttributes = () =>
 		])
 		.returning();
 
-const NUMBER_OF_PRODUCTS = 100;
+const NUMBER_OF_PRODUCTS = 60;
 const uniqueEnforcerProductName = new UniqueEnforcer();
 const generateProduct = () => {
 	const name = uniqueEnforcerProductName.enforce(() =>
@@ -194,6 +194,28 @@ const generateProductAttributeValues = (
 	return productAttributeValues;
 };
 
+const generateProductVariant = (parent: { id: number; name: string }) => {
+	const name = `${parent.name} - ${faker.lorem.word()}`;
+	return {
+		name,
+		description: faker.commerce.productDescription(),
+		priceCents: Number(faker.commerce.price()),
+		slug: faker.helpers.slugify(name).toLowerCase(),
+		createdAt: faker.date.past(),
+		parentId: parent.id,
+	} satisfies ProductInsert;
+};
+
+const generateProductVariantAttributes = (
+	productVariantId: number,
+	attributes: ProductAttributeSelect[],
+) => {
+	const randomAttribute =
+		attributes[Math.floor(Math.random() * attributes.length)];
+
+	return generateProductAttributeValues(productVariantId, [randomAttribute]);
+};
+
 async function seed() {
 	const productAttributes = await generateProductAttributes();
 
@@ -204,7 +226,20 @@ async function seed() {
 	const insertedProducts = await db
 		.insert(products)
 		.values(productsToInsert)
-		.returning({ id: products.id });
+		.returning({ id: products.id, name: products.name });
+
+	const variantsToInsert: ProductInsert[] = [];
+	for (const product of insertedProducts) {
+		const variantsToGenerate = Math.floor(Math.random() * 5);
+		for (let i = 0; i < variantsToGenerate; i++) {
+			const variant = generateProductVariant(product);
+			variantsToInsert.push(variant);
+		}
+	}
+	const insertedVariants = await db
+		.insert(products)
+		.values(variantsToInsert)
+		.returning();
 
 	const productAttributeValuesToInsert: ProductAttributeValueInsert[] = [];
 	for (const product of insertedProducts) {
@@ -214,15 +249,25 @@ async function seed() {
 		);
 		productAttributeValuesToInsert.push(...productAttributeValues);
 	}
-	await db
-		.insert(productAttributeValues)
-		.values(productAttributeValuesToInsert);
-
-	const productAssetsToInsert = [];
-	for (const product of insertedProducts) {
-		const productAssets = generateProductAssets(product.id);
-		productAssetsToInsert.push(...productAssets);
+	const variantAttributeValuesToInsert: ProductAttributeValueInsert[] = [];
+	for (const variant of insertedVariants) {
+		const variantAttributeValues = generateProductVariantAttributes(
+			variant.id,
+			productAttributes,
+		);
+		variantAttributeValuesToInsert.push(...variantAttributeValues);
 	}
+
+	const allAttributeValuesToInsert = [
+		...productAttributeValuesToInsert,
+		...variantAttributeValuesToInsert,
+	];
+	await db.insert(productAttributeValues).values(allAttributeValuesToInsert);
+
+	const allInsertedProducts = [...insertedProducts, ...insertedVariants];
+	const productAssetsToInsert = allInsertedProducts
+		.map((p) => p.id)
+		.flatMap(generateProductAssets);
 
 	await db.insert(productAssets).values(productAssetsToInsert);
 }

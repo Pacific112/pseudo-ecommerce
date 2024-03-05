@@ -1,4 +1,5 @@
 import {
+	type AnyPgColumn,
 	integer,
 	jsonb,
 	pgEnum,
@@ -52,6 +53,7 @@ export const products = pgTable("products", {
 	createdAt: timestamp("created_at").notNull(),
 	priceCents: integer("price").notNull(),
 	priceCurrency: varchar("currency").notNull().default("USD"),
+	parentId: integer("parent_id").references((): AnyPgColumn => products.id),
 });
 
 export type ProductInsert = typeof products.$inferInsert;
@@ -78,6 +80,11 @@ export const productAttributeValueRelations = relations(
 	}),
 );
 
-export const productRelations = relations(products, ({ many }) => ({
+export const productRelations = relations(products, ({ many, one }) => ({
 	attributes: many(productAttributeValues),
+	parent: one(products, {
+		fields: [products.parentId],
+		references: [products.id],
+	}),
+	variants: many(products),
 }));

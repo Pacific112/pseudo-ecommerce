@@ -6,7 +6,7 @@ import type {
 import type { PriceMapper } from "./base/schema.mappers";
 import type {
 	ProductMapper,
-	ProductAttributeMapper,
+	ProductVariantMapper,
 } from "./product/schema.mappers";
 export type Maybe<T> = T | null | undefined;
 export type InputMaybe<T> = T | null | undefined;
@@ -62,6 +62,7 @@ export type Product = {
 	name: Scalars["String"]["output"];
 	price: Price;
 	slug: Scalars["String"]["output"];
+	variants: Array<ProductVariant>;
 };
 
 export type ProductAttribute = {
@@ -75,6 +76,16 @@ export type ProductPage = {
 	__typename?: "ProductPage";
 	nodes: Array<Product>;
 	pageInfo: PageInfo;
+};
+
+export type ProductVariant = {
+	__typename?: "ProductVariant";
+	attributes: Array<ProductAttribute>;
+	description?: Maybe<Scalars["String"]["output"]>;
+	id: Scalars["HashID"]["output"];
+	name: Scalars["String"]["output"];
+	price: Price;
+	slug: Scalars["String"]["output"];
 };
 
 export type Query = {
@@ -206,10 +217,11 @@ export type ResolversTypes = {
 	Price: ResolverTypeWrapper<PriceMapper>;
 	Float: ResolverTypeWrapper<Scalars["Float"]["output"]>;
 	Product: ResolverTypeWrapper<ProductMapper>;
-	ProductAttribute: ResolverTypeWrapper<ProductAttributeMapper>;
+	ProductAttribute: ResolverTypeWrapper<ProductAttribute>;
 	ProductPage: ResolverTypeWrapper<
 		Omit<ProductPage, "nodes"> & { nodes: Array<ResolversTypes["Product"]> }
 	>;
+	ProductVariant: ResolverTypeWrapper<ProductVariantMapper>;
 	Query: ResolverTypeWrapper<{}>;
 	Int: ResolverTypeWrapper<Scalars["Int"]["output"]>;
 };
@@ -223,10 +235,11 @@ export type ResolversParentTypes = {
 	Price: PriceMapper;
 	Float: Scalars["Float"]["output"];
 	Product: ProductMapper;
-	ProductAttribute: ProductAttributeMapper;
+	ProductAttribute: ProductAttribute;
 	ProductPage: Omit<ProductPage, "nodes"> & {
 		nodes: Array<ResolversParentTypes["Product"]>;
 	};
+	ProductVariant: ProductVariantMapper;
 	Query: {};
 	Int: Scalars["Int"]["output"];
 };
@@ -279,6 +292,11 @@ export type ProductResolvers<
 	name?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
 	price?: Resolver<ResolversTypes["Price"], ParentType, ContextType>;
 	slug?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+	variants?: Resolver<
+		Array<ResolversTypes["ProductVariant"]>,
+		ParentType,
+		ContextType
+	>;
 	__isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -300,6 +318,28 @@ export type ProductPageResolvers<
 > = {
 	nodes?: Resolver<Array<ResolversTypes["Product"]>, ParentType, ContextType>;
 	pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
+	__isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ProductVariantResolvers<
+	ContextType = any,
+	ParentType extends
+		ResolversParentTypes["ProductVariant"] = ResolversParentTypes["ProductVariant"],
+> = {
+	attributes?: Resolver<
+		Array<ResolversTypes["ProductAttribute"]>,
+		ParentType,
+		ContextType
+	>;
+	description?: Resolver<
+		Maybe<ResolversTypes["String"]>,
+		ParentType,
+		ContextType
+	>;
+	id?: Resolver<ResolversTypes["HashID"], ParentType, ContextType>;
+	name?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+	price?: Resolver<ResolversTypes["Price"], ParentType, ContextType>;
+	slug?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
 	__isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -329,5 +369,6 @@ export type Resolvers<ContextType = any> = {
 	Product?: ProductResolvers<ContextType>;
 	ProductAttribute?: ProductAttributeResolvers<ContextType>;
 	ProductPage?: ProductPageResolvers<ContextType>;
+	ProductVariant?: ProductVariantResolvers<ContextType>;
 	Query?: QueryResolvers<ContextType>;
 };

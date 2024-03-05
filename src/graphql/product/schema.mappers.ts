@@ -1,9 +1,5 @@
-import type {
-	ProductAttributeValueSelect,
-	ProductSelect,
-} from "./schema.db.ts";
-export type { ProductAttributeValueSelect as ProductAttributeMapper } from "./schema.db.ts";
+import type { ProductSelect } from "./schema.db.ts";
 
-export type ProductMapper = ProductSelect & {
-	attributes: ProductAttributeValueSelect[];
-};
+export type ProductMapper = ProductSelect;
+
+export type ProductVariantMapper = ProductSelect;

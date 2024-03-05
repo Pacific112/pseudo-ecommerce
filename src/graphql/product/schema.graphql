@@ -14,6 +14,15 @@ type ProductAttribute {
 	type: String!
 }
 
+type ProductVariant {
+	id: HashID!
+	name: String!
+	price: Price!
+	slug: String!
+	description: String
+	attributes: [ProductAttribute!]!
+}
+
 type Product {
 	id: HashID!
 	name: String!
@@ -21,4 +30,5 @@ type Product {
 	slug: String!
 	description: String
 	attributes: [ProductAttribute!]!
+	variants: [ProductVariant!]!
 }

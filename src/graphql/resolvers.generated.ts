@@ -6,6 +6,7 @@ import { Price } from "./base/resolvers/Price";
 import { Product } from "./product/resolvers/Product";
 import { ProductAttribute } from "./product/resolvers/ProductAttribute";
 import { ProductPage } from "./product/resolvers/ProductPage";
+import { ProductVariant } from "./product/resolvers/ProductVariant";
 import { productBySlug as Query_productBySlug } from "./product/resolvers/Query/productBySlug";
 import { products as Query_products } from "./product/resolvers/Query/products";
 export const resolvers: Resolvers = {
@@ -17,4 +18,5 @@ export const resolvers: Resolvers = {
 	Product: Product,
 	ProductAttribute: ProductAttribute,
 	ProductPage: ProductPage,
+	ProductVariant: ProductVariant,
 };

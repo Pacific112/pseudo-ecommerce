@@ -33,9 +33,6 @@ export const products: NonNullable<QueryResolvers["products"]> = async (
 
 	const foundProducts = await dbClient.query.products.findMany({
 		where: requestedId ? gt(productsTable.id, requestedId) : undefined,
-		with: {
-			attributes: true,
-		},
 		limit,
 	});
 
