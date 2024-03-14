@@ -10,6 +10,15 @@ import {
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
+export const categories = pgTable("categories", {
+	id: serial("id").primaryKey(),
+	name: varchar("name").notNull(),
+	slug: varchar("slug").notNull(),
+	parentId: integer("parent_id").references((): AnyPgColumn => categories.id),
+});
+
+export type CategorySelect = typeof categories.$inferSelect;
+
 export const attributeTypeEnum = pgEnum("attribute_type", [
 	"string",
 	"number",
@@ -54,6 +63,7 @@ export const products = pgTable("products", {
 	priceCents: integer("price").notNull(),
 	priceCurrency: varchar("currency").notNull().default("USD"),
 	parentId: integer("parent_id").references((): AnyPgColumn => products.id),
+	categoryId: integer("category_id").references(() => categories.id),
 });
 
 export type ProductInsert = typeof products.$inferInsert;
@@ -87,4 +97,17 @@ export const productRelations = relations(products, ({ many, one }) => ({
 		references: [products.id],
 	}),
 	variants: many(products),
+	category: one(categories, {
+		fields: [products.categoryId],
+		references: [categories.id],
+	}),
+}));
+
+export const categoryRelations = relations(categories, ({ many, one }) => ({
+	children: many(categories),
+	products: many(products),
+	parent: one(categories, {
+		fields: [categories.parentId],
+		references: [categories.id],
+	}),
 }));

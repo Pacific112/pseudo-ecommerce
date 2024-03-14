@@ -3,6 +3,8 @@ import { drizzle } from "drizzle-orm/postgres-js";
 import { faker } from "@faker-js/faker";
 import { UniqueEnforcer } from "enforce-unique";
 import {
+	categories,
+	type CategorySelect,
 	type ProductAssetInsert,
 	productAssets,
 	productAttributes,
@@ -102,6 +104,18 @@ const generateProductAssets = (productId: number) => {
 	return assetsToInsert;
 };
 
+const generateCategories = (parentId?: number) => {
+	return faker.helpers
+		.multiple(faker.commerce.productMaterial, { count: 3 })
+		.map((name) => {
+			return {
+				name,
+				slug: faker.helpers.slugify(name).toLowerCase(),
+				parentId,
+			};
+		});
+};
+
 const generateProductAttributes = () =>
 	dbClient
 		.insert(productAttributes)
@@ -128,7 +142,7 @@ const generateProductAttributes = () =>
 
 const NUMBER_OF_PRODUCTS = 60;
 const uniqueEnforcerProductName = new UniqueEnforcer();
-const generateProduct = () => {
+const generateProduct = (category: CategorySelect) => {
 	const name = uniqueEnforcerProductName.enforce(() =>
 		faker.commerce.productName(),
 	);
@@ -138,6 +152,7 @@ const generateProduct = () => {
 		priceCents: Number(faker.commerce.price()),
 		slug: faker.helpers.slugify(name).toLowerCase(),
 		createdAt: faker.date.past(),
+		categoryId: category.id,
 	} satisfies ProductInsert;
 };
 
@@ -217,11 +232,37 @@ const generateProductVariantAttributes = (
 };
 
 async function seed() {
+	const rootCategories = await dbClient
+		.insert(categories)
+		.values(generateCategories())
+		.returning();
+	const firstLevelCategories = await dbClient
+		.insert(categories)
+		.values(
+			rootCategories.flatMap((category) => generateCategories(category.id)),
+		)
+		.returning();
+	const secondLevelCategories = await dbClient
+		.insert(categories)
+		.values(
+			firstLevelCategories.flatMap((category) =>
+				generateCategories(category.id),
+			),
+		)
+		.returning();
+	const allCategories = [
+		...rootCategories,
+		...firstLevelCategories,
+		...secondLevelCategories,
+	];
+
 	const productAttributes = await generateProductAttributes();
 
 	const productsToInsert: ProductInsert[] = [];
 	for (let i = 0; i < NUMBER_OF_PRODUCTS; i++) {
-		productsToInsert.push(generateProduct());
+		const category =
+			allCategories[Math.floor(Math.random() * allCategories.length)];
+		productsToInsert.push(generateProduct(category));
 	}
 	const insertedProducts = await db
 		.insert(products)

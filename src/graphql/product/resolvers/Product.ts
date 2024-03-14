@@ -1,7 +1,11 @@
 import type { ProductResolvers } from "./../../types.generated";
 import { dbClient } from "db/db.client.ts";
 import { and, eq, not, or } from "drizzle-orm";
-import { productAttributeValues, products } from "graphql/product/schema.db.ts";
+import {
+	categories,
+	productAttributeValues,
+	products,
+} from "graphql/product/schema.db.ts";
 
 export const Product: ProductResolvers = {
 	price: (parent) => parent,
@@ -28,5 +32,12 @@ export const Product: ProductResolvers = {
 		return dbClient.query.products.findMany({
 			where: eq(products.parentId, parent.id),
 		});
+	},
+	category: (parent) => {
+		if (parent.categoryId) {
+			return dbClient.query.categories.findFirst({
+				where: eq(categories.id, parent.categoryId),
+			});
+		}
 	},
 };

@@ -3,11 +3,12 @@ import type {
 	GraphQLScalarType,
 	GraphQLScalarTypeConfig,
 } from "graphql";
-import type { PriceMapper } from "./base/schema.mappers";
 import type {
+	CategoryMapper,
 	ProductMapper,
 	ProductVariantMapper,
 } from "./product/schema.mappers";
+import type { PriceMapper } from "./base/schema.mappers";
 export type Maybe<T> = T | null | undefined;
 export type InputMaybe<T> = T | null | undefined;
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -42,6 +43,21 @@ export type Scalars = {
 	HashID: { input: any; output: any };
 };
 
+export type Category = {
+	__typename?: "Category";
+	categories: Array<Category>;
+	id: Scalars["HashID"]["output"];
+	name: Scalars["String"]["output"];
+	parent?: Maybe<Category>;
+	products?: Maybe<ProductPage>;
+	slug: Scalars["String"]["output"];
+};
+
+export type CategoryproductsArgs = {
+	after?: InputMaybe<Scalars["String"]["input"]>;
+	pageSize?: InputMaybe<Scalars["Int"]["input"]>;
+};
+
 export type PageInfo = {
 	__typename?: "PageInfo";
 	hasNextPage: Scalars["Boolean"]["output"];
@@ -57,6 +73,7 @@ export type Price = {
 export type Product = {
 	__typename?: "Product";
 	attributes: Array<ProductAttribute>;
+	category?: Maybe<Category>;
 	description?: Maybe<Scalars["String"]["output"]>;
 	id: Scalars["HashID"]["output"];
 	name: Scalars["String"]["output"];
@@ -90,6 +107,7 @@ export type ProductVariant = {
 
 export type Query = {
 	__typename?: "Query";
+	categories: Array<Category>;
 	productBySlug: Product;
 	products: ProductPage;
 };
@@ -210,10 +228,12 @@ export type DirectiveResolverFn<
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
+	Category: ResolverTypeWrapper<CategoryMapper>;
+	String: ResolverTypeWrapper<Scalars["String"]["output"]>;
+	Int: ResolverTypeWrapper<Scalars["Int"]["output"]>;
 	HashID: ResolverTypeWrapper<Scalars["HashID"]["output"]>;
 	PageInfo: ResolverTypeWrapper<PageInfo>;
 	Boolean: ResolverTypeWrapper<Scalars["Boolean"]["output"]>;
-	String: ResolverTypeWrapper<Scalars["String"]["output"]>;
 	Price: ResolverTypeWrapper<PriceMapper>;
 	Float: ResolverTypeWrapper<Scalars["Float"]["output"]>;
 	Product: ResolverTypeWrapper<ProductMapper>;
@@ -223,15 +243,16 @@ export type ResolversTypes = {
 	>;
 	ProductVariant: ResolverTypeWrapper<ProductVariantMapper>;
 	Query: ResolverTypeWrapper<{}>;
-	Int: ResolverTypeWrapper<Scalars["Int"]["output"]>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
+	Category: CategoryMapper;
+	String: Scalars["String"]["output"];
+	Int: Scalars["Int"]["output"];
 	HashID: Scalars["HashID"]["output"];
 	PageInfo: PageInfo;
 	Boolean: Scalars["Boolean"]["output"];
-	String: Scalars["String"]["output"];
 	Price: PriceMapper;
 	Float: Scalars["Float"]["output"];
 	Product: ProductMapper;
@@ -241,7 +262,29 @@ export type ResolversParentTypes = {
 	};
 	ProductVariant: ProductVariantMapper;
 	Query: {};
-	Int: Scalars["Int"]["output"];
+};
+
+export type CategoryResolvers<
+	ContextType = any,
+	ParentType extends
+		ResolversParentTypes["Category"] = ResolversParentTypes["Category"],
+> = {
+	categories?: Resolver<
+		Array<ResolversTypes["Category"]>,
+		ParentType,
+		ContextType
+	>;
+	id?: Resolver<ResolversTypes["HashID"], ParentType, ContextType>;
+	name?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+	parent?: Resolver<Maybe<ResolversTypes["Category"]>, ParentType, ContextType>;
+	products?: Resolver<
+		Maybe<ResolversTypes["ProductPage"]>,
+		ParentType,
+		ContextType,
+		Partial<CategoryproductsArgs>
+	>;
+	slug?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+	__isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export interface HashIDScalarConfig
@@ -280,6 +323,11 @@ export type ProductResolvers<
 > = {
 	attributes?: Resolver<
 		Array<ResolversTypes["ProductAttribute"]>,
+		ParentType,
+		ContextType
+	>;
+	category?: Resolver<
+		Maybe<ResolversTypes["Category"]>,
 		ParentType,
 		ContextType
 	>;
@@ -348,6 +396,11 @@ export type QueryResolvers<
 	ParentType extends
 		ResolversParentTypes["Query"] = ResolversParentTypes["Query"],
 > = {
+	categories?: Resolver<
+		Array<ResolversTypes["Category"]>,
+		ParentType,
+		ContextType
+	>;
 	productBySlug?: Resolver<
 		ResolversTypes["Product"],
 		ParentType,
@@ -363,6 +416,7 @@ export type QueryResolvers<
 };
 
 export type Resolvers<ContextType = any> = {
+	Category?: CategoryResolvers<ContextType>;
 	HashID?: GraphQLScalarType;
 	PageInfo?: PageInfoResolvers<ContextType>;
 	Price?: PriceResolvers<ContextType>;

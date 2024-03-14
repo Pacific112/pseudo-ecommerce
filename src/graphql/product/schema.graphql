@@ -1,6 +1,16 @@
 extend type Query {
+	categories: [Category!]!
 	productBySlug(slug: String!): Product!
 	products(pageSize: Int, after: String): ProductPage!
+}
+
+type Category {
+	id: HashID!
+	name: String!
+	slug: String!
+	categories: [Category!]!
+	parent: Category
+	products(pageSize: Int, after: String): ProductPage
 }
 
 type ProductPage {
@@ -21,6 +31,7 @@ type ProductVariant {
 	slug: String!
 	description: String
 	attributes: [ProductAttribute!]!
+	category: Category
 }
 
 type Product {
@@ -31,4 +42,5 @@ type Product {
 	description: String
 	attributes: [ProductAttribute!]!
 	variants: [ProductVariant!]!
+	category: Category
 }

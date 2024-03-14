@@ -31,6 +31,7 @@
 - [ ] Add linter for graphql and TS
 - [ ] Separate product definition from the product in list. So you can have different model for management API and different when fetching via GraphQL
 - [ ] Better createdAt / updatedAt handling
+- [ ] How to test this shit?
 - [ ] Seed
   - [ ] Never ends after adding product attributes
   - [ ] Should be more manageable and structured
@@ -62,9 +63,9 @@ Products:
     - [x] overrides specific attributes
     - [x] original product is variant for the variant
 - [ ] categories
-  - [ ] products from category
-  - [ ] categories can be nested (max 3 or something)
-  - [ ] product can be part of many categories
+  - [x] products from category
+  - [x] categories can be nested (max 3 or something)
+  - [x] product can be part of many categories
   - [ ] similar products - based on same categories
 - [ ] search
   - [ ] psql gindex
@@ -80,13 +81,22 @@ Products:
   - [ ] I definitely have to take a look into data loaders to not do n+1 queries all the time
   - [ ] Why I always have to defined all fields (even non transformed) in resolvers?
   - [ ] improve validation -> args should go through zed or other validation lib
+  - [ ] products fetched from category should also include products from all subcategories (or at least we should have such option)
   - [ ] pagination
     - [ ] Make cursor a scalar
       - [ ] It shouldn't use raw ids otherwise hashid implementation doesn't have sense
       - [ ] Include sorts in cursor
     - [ ] better isLastPage calculation (needs to include count for all or something)
     - [ ] make sure it is all paginated - we need to support multiple cursors https://medium.com/@george_16060/cursor-based-pagination-with-arbitrary-ordering-b4af6d5e22db
-  - There should be separation between product in management and product in shop. Management has current variants sturcture etc. and after it is saved all variants are generated updated. Otherwise calculations become too complex
+  - [ ] There should be separation between product in management and product in shop. Management has current variants sturcture etc. and after it is saved all variants are generated updated. Otherwise calculations become too complex
+    - [ ] this should simplify resolvers for Product and ProductVariant
+    - [ ] ProductVariant should return all attributes, not only the ones that are overridden by the variant
+    - [ ] Variant should not have separate category set -> another argument to move it out of the product table?
+  - [ ] Different file structure
+    - [ ] graphql should be separate layer
+    - [ ] either core / domain has separate layer or graphql resolvers are separated from the domain / core / db
+  - [ ] graphql practices
+    - [ ] Should I always use edge when returning list of items? For example check Category model
 - [ ] auth
   - [ ] clerk?
   - [ ] multi tenancy
@@ -103,6 +113,7 @@ Products:
   - [ ] Asset validation (no nudity etc.)
 - [ ] For the future
   - [ ] stock - quantity, SKU etc.
+  - [ ] Categories will (and actually everything returned to the store) will require some metadata
 - Ideas:
   - [ ] MultiLanguage
   - [ ] upsell others - bought together. Based on statistics
