@@ -77,11 +77,14 @@ Products:
   - [ ] thumbnail (always first asset or mark it somehow)
 - [ ] improvements
   - [ ] hashid should be scoped by graphql type (for example Product should become a seed for it)
+  - [ ] should dbClient be taken from the context instead of imported directly?
   - [ ] attributes, variants and other relationships - they should be joined and fetched only when requested. Maybe use info object for that. Can it be improved by data loader?
   - [ ] I definitely have to take a look into data loaders to not do n+1 queries all the time
-  - [ ] Why I always have to defined all fields (even non transformed) in resolvers?
+  - [ ] Why I always have to define all fields (even non transformed) in resolvers?
   - [ ] improve validation -> args should go through zed or other validation lib
-  - [ ] products fetched from category should also include products from all subcategories (or at least we should have such option)
+  - [ ] categories
+    - [ ] products should be paginated
+    - [ ] products fetched from category should also include products from all subcategories (or at least we should have such option)
   - [ ] pagination
     - [ ] Make cursor a scalar
       - [ ] It shouldn't use raw ids otherwise hashid implementation doesn't have sense
